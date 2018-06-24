@@ -13,14 +13,14 @@
 static NSString * const kVideoOutputFile = @"movie.mp4";
 
 @interface EKMovieMaker()
-
-@property(nonatomic, strong, readonly) NSArray       *images;
-@property(nonatomic, strong, readonly) AVAssetWriter *videoWriter;
-
-@end
+    
+    @property(nonatomic, strong, readonly) NSArray       *images;
+    @property(nonatomic, strong, readonly) AVAssetWriter *videoWriter;
+    
+    @end
 
 @implementation EKMovieMaker
-
+    
 - (instancetype)initWithImages:(NSArray *)images {
     self = [super init];
     
@@ -39,7 +39,7 @@ static NSString * const kVideoOutputFile = @"movie.mp4";
     
     return self;
 }
-
+    
 - (void)createMovieWithCompletion:(void (^)(NSString *moviePath))completionBlock {
     NSParameterAssert(self.images);
     
@@ -50,15 +50,15 @@ static NSString * const kVideoOutputFile = @"movie.mp4";
     NSFileManager *fileMgr       = [NSFileManager defaultManager];
     NSString *documentsDirectory = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
     NSString *videoOutputPath    = [documentsDirectory stringByAppendingPathComponent:kVideoOutputFile];
-
+    
     if (![fileMgr removeItemAtPath:videoOutputPath error:&error]) {
         NSLog(@"Unable to delete file: %@", [error localizedDescription]);
     }
-        
+    
     NSLog(@"Start building video from defined frames.");
     
     self->_videoWriter = [[AVAssetWriter alloc] initWithURL:
-                          [NSURL fileURLWithPath:videoOutputPath] fileType:AVFileTypeQuickTimeMovie
+                          [NSURL fileURLWithPath:videoOutputPath] fileType:AVFileTypeMPEG4
                                                       error:&error];
     NSParameterAssert(self.videoWriter);
     
@@ -107,7 +107,7 @@ static NSString * const kVideoOutputFile = @"movie.mp4";
                 
                 if (!append_ok){
                     NSError *error = self.videoWriter.error;
-                
+                    
                     if (error != nil) {
                         NSLog(@"Unresolved error %@,%@.", error, [error userInfo]);
                     }
@@ -124,7 +124,7 @@ static NSString * const kVideoOutputFile = @"movie.mp4";
         if (!append_ok) {
             NSLog(@"error appending image %d times %d\n, with error.", frameCount, j);
         }
-        
+        CVBufferRelease(buffer);
         frameCount++;
     }
     
@@ -140,7 +140,7 @@ static NSString * const kVideoOutputFile = @"movie.mp4";
         }
     }];
 }
-
+    
 - (CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef) image {
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
                              [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
@@ -171,7 +171,7 @@ static NSString * const kVideoOutputFile = @"movie.mp4";
                                                  kCGImageAlphaPremultipliedFirst);
     
     CGContextConcatCTM(context, CGAffineTransformMakeRotation(0));
-    CGContextDrawImage(context, CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image)), image);
+    CGContextDrawImage(context, CGRectMake(0, 0, 512, 512), image);
     CGColorSpaceRelease(rgbColorSpace);
     CGContextRelease(context);
     
@@ -179,5 +179,5 @@ static NSString * const kVideoOutputFile = @"movie.mp4";
     
     return pxbuffer;
 }
-
-@end
+    
+    @end
