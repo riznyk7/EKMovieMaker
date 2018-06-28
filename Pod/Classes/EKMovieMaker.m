@@ -10,7 +10,7 @@
 
 #import "EKMovieMaker.h"
 
-static NSString * const kVideoOutputFile = @"movie.mp4";
+static NSString * const kVideoOutputFile = @"movie.mov";
 
 @interface EKMovieMaker()
     
@@ -58,7 +58,7 @@ static NSString * const kVideoOutputFile = @"movie.mp4";
     NSLog(@"Start building video from defined frames.");
     
     self->_videoWriter = [[AVAssetWriter alloc] initWithURL:
-                          [NSURL fileURLWithPath:videoOutputPath] fileType:AVFileTypeQuickTimeMovie
+                          [NSURL fileURLWithPath:videoOutputPath] fileType:AVFileTypeMPEG4
                                                       error:&error];
     NSParameterAssert(self.videoWriter);
     
