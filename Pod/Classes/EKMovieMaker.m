@@ -58,7 +58,7 @@ static NSString * const kVideoOutputFile = @"movie.mov";
     NSLog(@"Start building video from defined frames.");
     
     self->_videoWriter = [[AVAssetWriter alloc] initWithURL:
-                          [NSURL fileURLWithPath:videoOutputPath] fileType:AVFileTypeMPEG4
+                          [NSURL fileURLWithPath:videoOutputPath] fileType:AVFileTypeQuickTimeMovie
                                                       error:&error];
     NSParameterAssert(self.videoWriter);
     
