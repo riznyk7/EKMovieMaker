@@ -171,7 +171,7 @@ static NSString * const kVideoOutputFile = @"movie.mov";
                                                  kCGImageAlphaPremultipliedFirst);
     
     CGContextConcatCTM(context, CGAffineTransformMakeRotation(0));
-    CGContextDrawImage(context, CGRectMake(0, 0, 800, 800), image);
+    CGContextDrawImage(context, CGRectMake(0, 0, 720, 720), image);
     CGColorSpaceRelease(rgbColorSpace);
     CGContextRelease(context);
     
