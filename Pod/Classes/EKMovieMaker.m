@@ -91,42 +91,44 @@ static NSString * const kVideoOutputFile = @"movie.mov";
     int frameCount          = 0;
     
     NSLog(@"**************************************************");
-    
-    for(UIImage *img in self.images) {
-        buffer = [self pixelBufferFromCGImage:[img CGImage]];
-        
-        BOOL append_ok = NO;
-        int j          = 0;
-        
-        while (!append_ok && j < 30) {
-            if (adaptor.assetWriterInput.readyForMoreMediaData)  {
-                NSLog(@"Processing video frame (%d,%lu)", frameCount, (unsigned long)self.images.count);
-                
-                CMTime frameTime = CMTimeMake(frameCount * self.frameDuration,(int32_t) self.framesPerSecond);
-                append_ok        = [adaptor appendPixelBuffer:buffer withPresentationTime:frameTime];
-                
-                if (!append_ok){
-                    NSError *error = self.videoWriter.error;
+    for (int i = 1; i <= 4; i++) {
+        for(UIImage *img in self.images) {
+            buffer = [self pixelBufferFromCGImage:[img CGImage]];
+            
+            BOOL append_ok = NO;
+            int j          = 0;
+            
+            while (!append_ok && j < 30) {
+                if (adaptor.assetWriterInput.readyForMoreMediaData)  {
+                    NSLog(@"Processing video frame (%d,%lu)", frameCount, (unsigned long)self.images.count);
                     
-                    if (error != nil) {
-                        NSLog(@"Unresolved error %@,%@.", error, [error userInfo]);
+                    CMTime frameTime = CMTimeMake(frameCount * self.frameDuration,(int32_t) self.framesPerSecond);
+                    append_ok        = [adaptor appendPixelBuffer:buffer withPresentationTime:frameTime];
+                    
+                    if (!append_ok){
+                        NSError *error = self.videoWriter.error;
+                        
+                        if (error != nil) {
+                            NSLog(@"Unresolved error %@,%@.", error, [error userInfo]);
+                        }
                     }
                 }
-            }
-            else {
-                NSLog(@"adaptor not ready %d, %d\n", frameCount, j);
-                [NSThread sleepForTimeInterval:0.1f];
+                else {
+                    NSLog(@"adaptor not ready %d, %d\n", frameCount, j);
+                    [NSThread sleepForTimeInterval:0.1f];
+                }
+                
+                j++;
             }
             
-            j++;
+            if (!append_ok) {
+                NSLog(@"error appending image %d times %d\n, with error.", frameCount, j);
+            }
+            CVBufferRelease(buffer);
+            frameCount++;
         }
-        
-        if (!append_ok) {
-            NSLog(@"error appending image %d times %d\n, with error.", frameCount, j);
-        }
-        CVBufferRelease(buffer);
-        frameCount++;
     }
+    
     
     NSLog(@"**************************************************");
     
