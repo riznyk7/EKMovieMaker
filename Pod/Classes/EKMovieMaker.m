@@ -10,17 +10,17 @@
 
 #import "EKMovieMaker.h"
 
-static NSString * const kVideoOutputFile = @"movie.mov";
+static NSString * const kVideoOutputFile = @"movie.mp4";
 
 @interface EKMovieMaker()
-    
-    @property(nonatomic, strong, readonly) NSArray       *images;
-    @property(nonatomic, strong, readonly) AVAssetWriter *videoWriter;
-    
-    @end
+
+@property(nonatomic, strong, readonly) NSArray       *images;
+@property(nonatomic, strong, readonly) AVAssetWriter *videoWriter;
+
+@end
 
 @implementation EKMovieMaker
-    
+
 - (instancetype)initWithImages:(NSArray *)images {
     self = [super init];
     
@@ -39,7 +39,7 @@ static NSString * const kVideoOutputFile = @"movie.mov";
     
     return self;
 }
-    
+
 - (void)createMovieWithCompletion:(void (^)(NSString *moviePath))completionBlock {
     NSParameterAssert(self.images);
     
@@ -58,7 +58,7 @@ static NSString * const kVideoOutputFile = @"movie.mov";
     NSLog(@"Start building video from defined frames.");
     
     self->_videoWriter = [[AVAssetWriter alloc] initWithURL:
-                          [NSURL fileURLWithPath:videoOutputPath] fileType:AVFileTypeQuickTimeMovie
+                          [NSURL fileURLWithPath:videoOutputPath] fileType:AVFileTypeMPEG4
                                                       error:&error];
     NSParameterAssert(self.videoWriter);
     
@@ -142,7 +142,7 @@ static NSString * const kVideoOutputFile = @"movie.mov";
         }
     }];
 }
-    
+
 - (CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef) image {
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
                              [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
@@ -181,5 +181,5 @@ static NSString * const kVideoOutputFile = @"movie.mov";
     
     return pxbuffer;
 }
-    
-    @end
+
+@end
